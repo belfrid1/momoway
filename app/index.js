@@ -4,10 +4,18 @@ import Spacing from "../constants/Spacing";
 import FontSize from "../constants/FontSize";
 import Colors from "../constants/Colors";
 import Font from "../constants/Font";
+import {NativeStackScreenProps} from "@react-navigation/native-stack";
+
+import {RootStackParamList} from "../types";
+
+
 
 
 const { height } = Dimensions.get("window");
-const WelcomeScreen = () => {
+
+
+type Props = NativeStackScreenProps<RootStackParamList, "Welcome">;
+const WelcomeScreen: React.FC<Props> = ({navigation: {navigate} }) => {
     return (
          <SafeAreaView>
             <View>
@@ -45,17 +53,53 @@ const WelcomeScreen = () => {
 
                 <View style={{
                     paddingHorizontal: Spacing * 2,
-                    paddingVertical: Spacing*4
+                    paddingTop: Spacing * 6,
+                    flexDirection: "row",
+
                 }} >
-                    <TouchableOpacity style={{
+                    <TouchableOpacity 
+                    onPress={()=>navigate("Login")}
+                    style={{
                         backgroundColor:Colors.primary,
                         paddingVertical:Spacing*1.5,
                         paddingHorizontal: Spacing * 2,
                         width: "48%",
-                        
+                        borderRadius: Spacing, 
+                        shadowColor: Colors.primary,
+                        shadowOffset: {
+                            width: 0,
+                            height:Spacing,
+                        },
+                        shadowOpacity: 0.3,
+                        shadowRadius: Spacingn,     
                     }} >
-                        <Text>
+                        <Text style={{
+                            fontFamily: Font["popins-bold"],
+                            color: Colors.onPrimary,
+                            fontSize: FontSize.large,
+                            textAlign:"center"
+                        }}>
                             Se Connecter
+                        </Text>
+                    </TouchableOpacity>
+
+
+                    <TouchableOpacity
+                    onPress={()=>navigate("Register")}
+                    style={{
+                        backgroundColor:Colors.primary,
+                        paddingVertical:Spacing*1.5,
+                        paddingHorizontal: Spacing * 2,
+                        width: "48%",
+                        borderRadius: Spacing,                        
+                    }} >
+                        <Text style={{
+                            fontFamily: Font["popins-bold"],
+                            color: Colors.text,
+                            fontSize: FontSize.large,
+                            textAlign:"center"
+                        }}>
+                            S'inscrire
                         </Text>
                     </TouchableOpacity>
                 </View>
