@@ -1,114 +1,153 @@
-import { Dimensions, SafeAreaView, ImageBackground, StyleSheet, Text, View, TouchableOpacity} from "react-native";
-import React from "react";
+import { Dimensions, SafeAreaView, ScrollView,ImageBackground, StyleSheet, Text, View, TouchableOpacity} from "react-native";
+import {React, useState} from "react";
 import Spacing from "../constants/Spacing";
 import FontSize from "../constants/FontSize";
 import Colors from "../constants/Colors";
-import Font from "../constants/Font";
-import {NativeStackScreenProps} from "@react-navigation/native-stack";
-
-import {RootStackParamList} from "../types";
-
-
+import { Stack } from "expo-router"; 
+import { TextInput } from "react-native-gesture-handler";
+import axios from "axios";
 
 
 const { height } = Dimensions.get("window");
 
 
-type Props = NativeStackScreenProps<RootStackParamList, "Welcome">;
-const WelcomeScreen: React.FC<Props> = ({navigation: {navigate} }) => {
-    return (
-         <SafeAreaView>
-            <View>
-                <ImageBackground 
-                style={{
-                    height: height / 2.5,
-                    }}
-                    resizeMode="contain"
-                    source={require("../assets/images/welcome-img.png")}/>
-                <View style={{
-                    paddingHorizontal: Spacing * 4,
-                    paddingTop: Spacing * 4,
-                }}>
-                    <Text 
-                    style={{
-                        fontSize: FontSize.xxLarge,
-                        color: Colors.primary,
-                        fontFamily: Font["popins-bold"],
-                        textAlign: "center",
-                    }}>
-                        Connectez vous ici
-                    </Text>
 
+//type Props = NativeStackScreenProps<RootStackParamList, "Welcome">;
+const LoginScreen = () => {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleLogin = async ()=>{
+        try {
+            const response = await axios.post('http://192.168.100.109:8081/api/login',
+            {
+                username,
+                password
+            });
+            console.log('success+',"ok");
+            const token = response.data.token;
+             navigation.navigate('home')
+
+
+        }catch (error){
+            if(error.response){
+                console.log('data+',error.response.data);
+                console.log('status+',error.response.status);
+                console.log('header+',error.response.headers);
+            }else if (error.request){
+                console.log('request+',error.request);
+            }else{
+                // Erreur inattendue
+                console.log('Error+', error.message);
+            }
+           
+        }
+    };
+
+    return (
+       <ScrollView>
+        <Stack.Screen options={{headerShown:false}}></Stack.Screen>
+        <SafeAreaView>
+            <View 
+            style={{
+                padding: Spacing*2,
+
+                }} >   
+                <View style={{
+               alignItems:"center",
+
+                }} >
+                    <Text style={{ 
+                    fontSize: FontSize.xLarge,
+                    color: Colors.primary,
+                    marginVertical: Spacing*3,
+                    }}>Connexion</Text>
+                    <Text 
+                    style={{ 
+                        fontSize: FontSize.large,
+                        //fontFamily: Font["poppins-semiBold"],
+                        }}>Connecter vous ici</Text>
+                </View>  
+
+                <View 
+                    style={{
+                        marginVertical: Spacing *3
+                    }}>
+                    <TextInput 
+                    
+                        placeholder="Email"
+                        placeholderTextColor={Colors.darkText}
+                        style={{
+                            fontSize: FontSize.small,
+                            padding: Spacing * 2,
+                            backgroundColor: Colors.lightPrimary,
+                            borderRadius: Spacing,
+                            marginVertical: Spacing,
+                        }}
+                        onChangeText={(username) => setUsername(username)}
+                        />
+
+                    <TextInput 
+                        placeholder="Password"
+                        placeholderTextColor={Colors.darkText}
+                        style={{
+                            fontSize: FontSize.small,
+                            padding: Spacing * 2,
+                            backgroundColor: Colors.lightPrimary,
+                            borderRadius: Spacing,
+                            marginVertical: Spacing,
+                        }}
+                        onChangeText={(password) => setPassword(password)}/>
+
+                   
+                </View>     
+
+                <View>
                     <Text 
                     style={{
                         fontSize: FontSize.small,
-                        color: Colors.text,
-                        fontFamily: Font["popins-bold"],
-                        textAlign: "center",
-                        marginTop: Spacing * 2,
+                        color: Colors.primary,
+                        alignSelf: "flex-end",
                     }}>
-                        Explorer tous les jobs basés sur votre domaine d'expertise
+                        Mot de passe oublié
                     </Text>
-                </View>
+                </View> 
 
-                <View style={{
-                    paddingHorizontal: Spacing * 2,
-                    paddingTop: Spacing * 6,
-                    flexDirection: "row",
+                <TouchableOpacity onPress={handleLogin} style={{
+                    padding: Spacing * 2,
+                    backgroundColor: Colors.primary,
+                    marginVertical: Spacing*3,
+                    borderRadius: Spacing,
 
-                }} >
-                    <TouchableOpacity 
-                    onPress={()=>navigate("Login")}
-                    style={{
-                        backgroundColor:Colors.primary,
-                        paddingVertical:Spacing*1.5,
-                        paddingHorizontal: Spacing * 2,
-                        width: "48%",
-                        borderRadius: Spacing, 
-                        shadowColor: Colors.primary,
-                        shadowOffset: {
-                            width: 0,
-                            height:Spacing,
-                        },
-                        shadowOpacity: 0.3,
-                        shadowRadius: Spacingn,     
-                    }} >
-                        <Text style={{
-                            fontFamily: Font["popins-bold"],
-                            color: Colors.onPrimary,
-                            fontSize: FontSize.large,
-                            textAlign:"center"
-                        }}>
-                            Se Connecter
-                        </Text>
-                    </TouchableOpacity>
+                }}>
+                    <Text style={{
+                        color: Colors.onPrimary,
+                        textAlign: "center",
+                        fontSize: FontSize.large,
 
+                    }} > 
+                        Se connecter
+                    </Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={{
+                    padding: Spacing,
+                }}>
+                    <Text style={{
+                        
+                        textAlign: "center",
+                        color: Colors.text,
+                        fontSize: FontSize.small,
 
-                    <TouchableOpacity
-                    onPress={()=>navigate("Register")}
-                    style={{
-                        backgroundColor:Colors.primary,
-                        paddingVertical:Spacing*1.5,
-                        paddingHorizontal: Spacing * 2,
-                        width: "48%",
-                        borderRadius: Spacing,                        
-                    }} >
-                        <Text style={{
-                            fontFamily: Font["popins-bold"],
-                            color: Colors.text,
-                            fontSize: FontSize.large,
-                            textAlign:"center"
-                        }}>
-                            S'inscrire
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-
-            </View>
-         </SafeAreaView>
+                    }}>
+                        Créer un compte
+                    </Text>
+                </TouchableOpacity>
+            </View> 
+        </SafeAreaView>
+        </ScrollView>
     )
 };
 
-export default WelcomeScreen;
+export default LoginScreen;
 
 const styles = StyleSheet.create({});
