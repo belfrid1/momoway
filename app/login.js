@@ -6,6 +6,7 @@ import Colors from "../constants/Colors";
 import { Stack } from "expo-router"; 
 import { TextInput } from "react-native-gesture-handler";
 import axios from "axios";
+import  { Redirect } from 'expo-router';
 
 
 const { height } = Dimensions.get("window");
@@ -19,18 +20,20 @@ const LoginScreen = () => {
 
     const handleLogin = async ()=>{
         try {
-            const response = await axios.post('http://192.168.100.109:8000/api/login',
+            const response = await axios.post('http://192.168.0.102:8000/api/login',
             {
                 username,
                 password
             });
-            
+            console.error('##Login username:', username);
+            console.error('##Login password:', password);
             const token = response.data.token;
-             navigation.navigate('home')
+            <Redirect href="/home"/>
+            // navigation.navigate('home')
 
 
         }catch (error){
-            console.error('Login error:', error);
+            console.error('######"Login error,:', error);
         }
     };
 
