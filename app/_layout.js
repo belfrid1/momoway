@@ -1,8 +1,12 @@
-import { Stack } from "expo-router";
+import { Redirect ,Stack } from "expo-router";
+
 
 
 const Layout = ()=> {
-    return <Stack  />;
+   
+    return <Stack>
+        < Redirect href="/home"/>
+    </Stack>;
 }
 
 

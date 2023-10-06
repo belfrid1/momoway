@@ -3,10 +3,12 @@ import {React, useState} from "react";
 import Spacing from "../constants/Spacing";
 import FontSize from "../constants/FontSize";
 import Colors from "../constants/Colors";
-import { Stack } from "expo-router"; 
+import { Stack, useRouter } from "expo-router"; 
 import { TextInput } from "react-native-gesture-handler";
 import axios from "axios";
-import  { Redirect } from 'expo-router';
+
+
+
 
 
 const { height } = Dimensions.get("window");
@@ -15,41 +17,45 @@ const { height } = Dimensions.get("window");
 
 //type Props = NativeStackScreenProps<RootStackParamList, "Welcome">;
 const LoginScreen = () => {
-    const [username, setUsername] = useState('');
+    const navigation = useRouter();
+    const [email, setUsername] = useState('');
     const [password, setPassword] = useState('');
-
     const handleLogin = async ()=>{
+        
+        console.log('### before try',email);
         try {
-            const response = await axios.post('http://192.168.0.102:8000/api/login',
+            const response = await axios.post('http://192.168.0.107:8000/api/login',
             {
-                username,
-                password
+                email,
+                password,
             });
-            console.error('##Login username:', username);
-            console.error('##Login password:', password);
-            const token = response.data.token;
-            <Redirect href="/home"/>
-            // navigation.navigate('home')
-
-
+          
+            if (response.data.success) {
+                console.log('### response.data success',response.data.success);
+                navigation.push('home');
+              }
+        
         }catch (error){
-            console.error('######"Login error,:', error);
+            if(error.response){
+                console.log('###++error',error.response.data.message);
+                
+            }else if (error.request){
+                console.log('####++request',error.request);
+            }else{
+                // Erreur inattendue
+                console.log('####Error+', error.message);
+            }
+           
         }
     };
 
     return (
        <ScrollView>
-        <Stack.Screen options={{headerShown:false}}></Stack.Screen>
+         <Stack.Screen options={{headerShown:false}}></Stack.Screen>
         <SafeAreaView>
-            <View 
-            style={{
-                padding: Spacing*2,
-
-                }} >   
-                <View style={{
-               alignItems:"center",
-
-                }} >
+            
+            <View style={{ padding: Spacing*2 }} >   
+                <View style={{alignItems:"center"}} >
                     <Text style={{ 
                     fontSize: FontSize.xLarge,
                     color: Colors.primary,
@@ -78,7 +84,7 @@ const LoginScreen = () => {
                             marginVertical: Spacing,
                         }}
                         onChangeText={(username) => setUsername(username)}
-                        />
+                    />
 
                     <TextInput 
                         placeholder="Password"
@@ -122,6 +128,7 @@ const LoginScreen = () => {
                         Se connecter
                     </Text>
                 </TouchableOpacity>
+
                 <TouchableOpacity style={{
                     padding: Spacing,
                 }}>
